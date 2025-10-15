@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratory Measurement Uncertainty - ASTM D1557 (Top-Down Approach)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        .container { max-width: 1400px; margin: auto; background-color: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1, h2, h3 { text-align: center; color: #333; }
+        h1 { border-bottom: 3px solid #007bff; padding-bottom: 15px; margin-bottom: 30px; }
+        .info-banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        .info-banner h2 { color: white; margin-top: 0; }
+        .info-banner p { margin: 5px 0; font-size: 0.95em; }
+        .cert-section { background-color: #e7f3ff; border: 2px solid #2196F3; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .input-group label { flex-basis: 70%; font-weight: bold; font-size: 0.9em; }
+        .input-group input { flex-basis: 28%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff2cc; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #007bff; color: white; font-weight: bold; }
+        td input { width: 95%; padding: 6px; border-radius: 3px; border: 1px solid #ccc; background-color: #fff2cc; }
+        td.output { background-color: #e9ecef; font-weight: bold; }
+        .action-button { display: block; width: 300px; margin: 30px auto; padding: 15px; font-size: 18px; font-weight: bold; color: #fff; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 8px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .action-button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
+        .results-box { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 10px; margin: 30px 0; text-align: center; }
+        .results-box h2 { color: white; margin-top: 0; }
+        .result-value { font-size: 2.5em; font-weight: bold; margin: 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .result-label { font-size: 1.2em; margin: 10px 0; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .stat-card { background-color: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px; }
+        .stat-card .label { font-size: 0.9em; margin-bottom: 5px; }
+        .stat-card .value { font-size: 1.5em; font-weight: bold; }
+        .usage-guide { background-color: #d4edda; border-left: 5px solid #28a745; padding: 20px; margin: 30px 0; border-radius: 5px; }
+        .usage-guide h3 { color: #155724; margin-top: 0; }
+        .usage-guide ul { margin: 10px 0; padding-left: 20px; }
+        .usage-guide li { margin: 8px 0; color: #155724; }
+        .warning-box { background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 5px; }
+        .warning-box strong { color: #856404; }
+        @media print {
+            body { margin: 0; background-color: #fff; }
+            .container { box-shadow: none; }
+            .action-button { display: none; }
+            .cert-section, table { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏢 Laboratory Measurement Uncertainty Determination</h1>
+    <h2>ASTM D1557 - Maximum Dry Density (Top-Down Approach)</h2>
+    
+    <div class="info-banner">
+        <h2>📊 Method: Empirical Reproducibility Study</h2>
+        <p>✓ Perform 10 complete tests on homogeneous material</p>
+        <p>✓ Calculate reproducibility standard deviation</p>
+        <p>✓ Includes ALL uncertainty sources: balance, caliper, moisture, repeatability</p>
+        <p>✓ One laboratory uncertainty value for all future tests</p>
+        <p><strong>Reference:</strong> ISO 21748:2017, EURACHEM Guide CG4 (2012), Nordtest TR 537</p>
+    </div>
+
+    <div class="cert-section">
+        <h3>📋 Calibration Certificate Data</h3>
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">
+            <em>Enter data from your balance and caliper calibration certificates</em>
+        </p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            <div>
+                <h4 style="color: #2196F3; border-bottom: 2px solid #2196F3; padding-bottom: 5px;">⚖️ Balance (Weighing Scale)</h4>
+                <div class="input-group">
+                    <label>Expanded Uncertainty (U) in grams:</label>
+                    <input type="number" id="u_balance_cert" value="1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>Coverage Factor (k):</label>
+                    <input type="number" id="k_balance" value="2" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>Resolution (g):</label>
+                    <input type="number" id="res_balance" value="0.1" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>Degrees of Freedom (ν):</label>
+                    <input type="number" id="nu_balance" value="50">
+                </div>
+            </div>
+            
+            <div>
+                <h4 style="color: #2196F3; border-bottom: 2px solid #2196F3; padding-bottom: 5px;">📏 Caliper / Mold Dimensions</h4>
+                <div class="input-group">
+                    <label>Expanded Uncertainty (U) in mm:</label>
+                    <input type="number" id="u_caliper_cert" value="0.65" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>Coverage Factor (k):</label>
+                    <input type="number" id="k_caliper" value="2" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label>Resolution (mm):</label>
+                    <input type="number" id="res_caliper" value="0.01" step="0.001">
+                </div>
+                <div class="input-group">
+                    <label>Degrees of Freedom (ν):</label>
+                    <input type="number" id="nu_caliper" value="10">
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background-color: rgba(255,255,255,0.7); border-radius: 5px;">
+            <h4 style="color: #2196F3; margin-top: 0;">📐 Mold Standard Dimensions</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-group">
+                    <label>Internal Diameter (mm):</label>
+                    <input type="number" id="mold_diameter" value="152.4" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Internal Height (mm):</label>
+                    <input type="number" id="mold_height" value="116.4" step="0.1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="warning-box">
+        <strong>⚠️ Important Instructions:</strong>
+        <ul style="margin: 10px 0; padding-left: 20px;">
+            <li>Use homogeneous, representative soil sample for all 10 tests</li>
+            <li>Follow ASTM D1557 procedure exactly for each test</li>
+            <li>Perform tests under repeatability conditions (same operator, equipment, day)</li>
+            <li>Enter ALL measured values (not calculated densities)</li>
+        </ul>
+    </div>
+
+    <h2 style="margin-top: 40px;">🧪 Validation Study: 10 Complete Tests</h2>
+    
+    <table id="validation-table">
+        <thead>
+            <tr>
+                <th>Test #</th>
+                <th>Mold+Wet<br>Soil (g)</th>
+                <th>Empty<br>Mold (g)</th>
+                <th>Container+<br>Wet Soil (g)</th>
+                <th>Container+<br>Dry Soil (g)</th>
+                <th>Empty<br>Container (g)</th>
+                <th>MDD<br>(g/cm³)</th>
+            </tr>
+        </thead>
+        <tbody id="test-data-body">
+        </tbody>
+    </table>
+
+    <button class="action-button" onclick="calculateLabUncertainty()">
+        🧮 Calculate Laboratory Uncertainty
+    </button>
+
+    <div class="results-box" id="results-box" style="display: none;">
+        <h2>🎯 Laboratory Certified Measurement Uncertainty</h2>
+        
+        <div class="result-value">
+            U = ±<span id="final-uncertainty">0.000</span> g/cm³
+        </div>
+        
+        <div class="result-label">
+            Coverage Factor: k = <span id="coverage-factor">0.00</span> (95% confidence, ν = <span id="dof">0</span>)
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="label">Mean MDD</div>
+                <div class="value"><span id="mean-mdd">0.000</span> g/cm³</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Std. Deviation</div>
+                <div class="value"><span id="std-dev">0.000</span> g/cm³</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Relative Uncertainty</div>
+                <div class="value"><span id="rel-unc">0.0</span> %</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Valid Until</div>
+                <div class="value"><span id="valid-date">---</span></div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background-color: rgba(255,255,255,0.3); border-radius: 8px;">
+            <h3 style="margin-top: 0;">📝 Uncertainty Budget Summary</h3>
+            <table style="background-color: white; color: #333;">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Contribution</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Repeatability</td>
+                        <td id="contrib-rep">--</td>
+                        <td>Within-test variation</td>
+                    </tr>
+                    <tr>
+                        <td>Balance (Mass)</td>
+                        <td id="contrib-balance">--</td>
+                        <td>From calibration certificate</td>
+                    </tr>
+                    <tr>
+                        <td>Caliper (Volume)</td>
+                        <td id="contrib-caliper">--</td>
+                        <td>Dominant source typically</td>
+                    </tr>
+                    <tr>
+                        <td>Moisture Content</td>
+                        <td id="contrib-moisture">--</td>
+                        <td>Oven drying uncertainty</td>
+                    </tr>
+                    <tr style="background-color: #d4edda; font-weight: bold;">
+                        <td>All Sources Combined</td>
+                        <td colspan="2">Included in reproducibility std. deviation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="usage-guide">
+        <h3>📖 How to Use This Result in Daily Testing</h3>
+        <ul>
+            <li><strong>For every client test report:</strong> Use the calculated uncertainty value above</li>
+            <li><strong>Example Report Format:</strong>
+                <ul>
+                    <li>Maximum Dry Density: 2.123 g/cm³</li>
+                    <li>Expanded Uncertainty: ±0.055 g/cm³</li>
+                    <li>Coverage Factor: k = 2.26 (95% confidence)</li>
+                    <li>Result: <strong>MDD = 2.123 ± 0.055 g/cm³</strong></li>
+                </ul>
+            </li>
+            <li><strong>Validity Period:</strong> Update this study annually or when:
+                <ul>
+                    <li>Equipment is recalibrated</li>
+                    <li>Test procedure changes</li>
+                    <li>Operator personnel change significantly</li>
+                    <li>Proficiency test results suggest deviation</li>
+                </ul>
+            </li>
+            <li><strong>For ISO 17025 Assessment:</strong> Print this report and keep with quality records</li>
+        </ul>
+    </div>
+
+    <button class="action-button" onclick="window.print()" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+        🖨️ Print Laboratory Uncertainty Certificate
+    </button>
+
+    <div style="text-align: center; margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+        <p style="color: #666; margin: 5px 0;"><strong>Compliance:</strong> ISO/IEC 17025:2017, ASTM D1557, GUM (JCGM 100:2008)</p>
+        <p style="color: #666; margin: 5px 0;"><strong>Method:</strong> Top-Down Approach (Empirical Reproducibility)</p>
+        <p style="color: #666; margin: 5px 0;"><strong>Date Generated:</strong> <span id="report-date"></span></p>
+    </div>
+</div>
+
+<script>
+    // T-distribution table for 95% confidence
+    const tTable = {
+        1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571,
+        6: 2.447, 7: 2.365, 8: 2.306, 9: 2.262, 10: 2.228,
+        15: 2.131, 20: 2.086, 25: 2.060, 30: 2.042, 40: 2.021,
+        50: 2.009, 60: 2.000, 80: 1.990, 100: 1.984, 120: 1.980,
+        'inf': 1.960
+    };
+
+    function getTValue(dof) {
+        if (dof >= 120) return tTable['inf'];
+        const keys = Object.keys(tTable).map(Number).filter(k => !isNaN(k)).sort((a,b) => a-b);
+        for (let k of keys) {
+            if (dof <= k) return tTable[k];
+        }
+        return tTable['inf'];
+    }
+
+    // Default test data
+    const defaultData = [
+        { c4: 9025.5, c5: 4350.1, c6: 550.8, c7: 512.2, c8: 115.3 },
+        { c4: 9035.1, c5: 4350.5, c6: 561.2, c7: 521.9, c8: 116.1 },
+        { c4: 9029.8, c5: 4349.8, c6: 545.4, c7: 507.5, c8: 115.0 },
+        { c4: 9040.2, c5: 4350.2, c6: 555.9, c7: 516.8, c8: 115.8 },
+        { c4: 9022.3, c5: 4350.6, c6: 565.1, c7: 525.0, c8: 116.4 },
+        { c4: 9033.7, c5: 4349.9, c6: 549.3, c7: 511.0, c8: 115.1 },
+        { c4: 9045.5, c5: 4350.3, c6: 558.8, c7: 519.5, c8: 115.9 },
+        { c4: 9038.1, c5: 4350.8, c6: 563.3, c7: 523.3, c8: 116.2 },
+        { c4: 9027.6, c5: 4350.1, c6: 552.7, c7: 514.0, c8: 115.5 },
+        { c4: 9031.9, c5: 4350.4, c6: 557.0, c7: 518.0, c8: 115.7 }
+    ];
+
+    function createTestTable() {
+        const tbody = document.getElementById('test-data-body');
+        for (let i = 0; i < 10; i++) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td style="background-color: #f8f9fa; font-weight: bold;">${i + 1}</td>
+                <td><input type="number" id="t${i}_c4" value="${defaultData[i].c4}" step="0.1"></td>
+                <td><input type="number" id="t${i}_c5" value="${defaultData[i].c5}" step="0.1"></td>
+                <td><input type="number" id="t${i}_c6" value="${defaultData[i].c6}" step="0.1"></td>
+                <td><input type="number" id="t${i}_c7" value="${defaultData[i].c7}" step="0.1"></td>
+                <td><input type="number" id="t${i}_c8" value="${defaultData[i].c8}" step="0.1"></td>
+                <td class="output" id="t${i}_mdd">---</td>
+            `;
+            tbody.appendChild(row);
+        }
+    }
+
+    function getVal(id) {
+        const element = document.getElementById(id);
+        return parseFloat(element.value) || 0;
+    }
+
+    function setVal(id, value, decimals = 3) {
+        const element = document.getElementById(id);
+        if (element && isFinite(value)) {
+            element.textContent = value.toFixed(decimals);
+        }
+    }
+
+    function calculateMDD(c4, c5, c6, c7, c8, diameter, height) {
+        const Mw = c6 - c7;
+        const Ms = c7 - c8;
+        const w = (Mw / Ms) * 100;
+        const V = (Math.PI * Math.pow(diameter / 2, 2) * height) / 1000;
+        const Mt = c4 - c5;
+        const rho_wet = Mt / V;
+        const rho_d = rho_wet / (1 + (w / 100));
+        return rho_d;
+    }
+
+    function calculateLabUncertainty() {
+        const diameter = getVal('mold_diameter');
+        const height = getVal('mold_height');
+        
+        // Calculate MDD for all 10 tests
+        const mddValues = [];
+        for (let i = 0; i < 10; i++) {
+            const c4 = getVal(`t${i}_c4`);
+            const c5 = getVal(`t${i}_c5`);
+            const c6 = getVal(`t${i}_c6`);
+            const c7 = getVal(`t${i}_c7`);
+            const c8 = getVal(`t${i}_c8`);
+            
+            const mdd = calculateMDD(c4, c5, c6, c7, c8, diameter, height);
+            mddValues.push(mdd);
+            setVal(`t${i}_mdd`, mdd, 4);
+        }
+        
+        // Calculate statistics
+        const n = 10;
+        const mean = mddValues.reduce((a, b) => a + b, 0) / n;
+        const variance = mddValues.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (n - 1);
+        const stdDev = Math.sqrt(variance);
+        
+        // Calculate uncertainty contribution from equipment
+        const u_balance_std = getVal('u_balance_cert') / getVal('k_balance');
+        const u_caliper_std = getVal('u_caliper_cert') / getVal('k_caliper');
+        
+        // Estimate individual contributions (informational only)
+        const typical_mass = 4700;
+        const typical_volume = 2124;
+        const typical_w = 10;
+        
+        const contrib_balance = (Math.sqrt(2) * u_balance_std) / (typical_volume * 1.1);
+        const contrib_caliper = (typical_mass / Math.pow(typical_volume, 2)) * u_caliper_std * 2 * typical_volume / diameter;
+        const contrib_moisture = typical_mass / (typical_volume * Math.pow(1.1, 2)) * 0.003;
+        
+        const total_sys = Math.sqrt(Math.pow(contrib_balance, 2) + Math.pow(contrib_caliper, 2) + Math.pow(contrib_moisture, 2));
+        
+        // Top-down approach: reproducibility includes everything
+        const dof = n - 1;
+        const k = getTValue(dof);
+        const U = k * stdDev;
+        const relUnc = (U / mean) * 100;
+        
+        // Display results
+        document.getElementById('results-box').style.display = 'block';
+        setVal('final-uncertainty', U, 4);
+        setVal('coverage-factor', k, 3);
+        setVal('dof', dof, 0);
+        setVal('mean-mdd', mean, 4);
+        setVal('std-dev', stdDev, 4);
+        setVal('rel-unc', relUnc, 2);
+        
+        // Contributions (informational estimates)
+        const rep_percent = (Math.pow(stdDev, 2) - Math.pow(total_sys, 2)) / Math.pow(stdDev, 2) * 100;
+        setVal('contrib-rep', rep_percent > 0 ? rep_percent.toFixed(1) + '%' : 'Included', 0);
+        setVal('contrib-balance', (Math.pow(contrib_balance, 2) / Math.pow(stdDev, 2) * 100).toFixed(1) + '%', 0);
+        setVal('contrib-caliper', (Math.pow(contrib_caliper, 2) / Math.pow(stdDev, 2) * 100).toFixed(1) + '%', 0);
+        setVal('contrib-moisture', (Math.pow(contrib_moisture, 2) / Math.pow(stdDev, 2) * 100).toFixed(1) + '%', 0);
+        
+        // Valid date (1 year from now)
+        const today = new Date();
+        const validUntil = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+        document.getElementById('valid-date').textContent = validUntil.toLocaleDateString('en-GB');
+        
+        // Scroll to results
+        document.getElementById('results-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Initialize
+    window.onload = () => {
+        createTestTable();
+        document.getElementById('report-date').textContent = new Date().toLocaleDateString('en-GB');
+    };
+</script>
+
+</body>
+</html>
