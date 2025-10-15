@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratory Measurement Uncertainty - ASTM D1557 (Top-Down Approach)</title>
+    <title>Comprehensive Repeatability & Reproducibility Analysis - ISO 5725 & ASTM E691</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f9f9f9; }
-        .container { max-width: 1400px; margin: auto; background-color: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .container { max-width: 1600px; margin: auto; background-color: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         h1, h2, h3 { text-align: center; color: #333; }
         h1 { border-bottom: 3px solid #007bff; padding-bottom: 15px; margin-bottom: 30px; }
         .info-banner { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
@@ -15,12 +15,73 @@
         .cert-section { background-color: #e7f3ff; border: 2px solid #2196F3; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
         .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .input-group label { flex-basis: 70%; font-weight: bold; font-size: 0.9em; }
-        .input-group input { flex-basis: 28%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff2cc; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        th { background-color: #007bff; color: white; font-weight: bold; }
-        td input { width: 95%; padding: 6px; border-radius: 3px; border: 1px solid #ccc; background-color: #fff2cc; }
-        td.output { background-color: #e9ecef; font-weight: bold; }
+        .input-group input, .input-group select { flex-basis: 28%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff2cc; }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 20px 0;
+            table-layout: fixed;
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 12px 8px; 
+            text-align: center;
+            overflow: visible;
+            white-space: nowrap;
+        }
+        th { 
+            background-color: #007bff; 
+            color: white; 
+            font-weight: bold;
+            font-size: 0.9em;
+            line-height: 1.3;
+        }
+        td input { 
+            width: 95%; 
+            padding: 6px; 
+            border-radius: 3px; 
+            border: 1px solid #ccc; 
+            background-color: #fff2cc;
+            font-family: monospace;
+        }
+        td select { 
+            width: 95%; 
+            padding: 6px; 
+            border-radius: 3px; 
+            border: 1px solid #ccc; 
+        }
+        td.output { 
+            background-color: #e9ecef; 
+            font-weight: bold;
+            font-family: monospace;
+        }
+        
+        /* Test Data Matrix specific styles */
+            #validation-table {
+                overflow-x: auto;
+                margin: 20px 0;
+                white-space: nowrap;
+            }
+            #validation-table th {
+                min-width: 100px;
+                padding: 12px 8px;
+                vertical-align: middle;
+            }
+            #validation-table td {
+                min-width: 100px;
+                font-family: monospace;
+                font-size: 0.95em;
+            }
+            /* Column-specific widths */
+            #validation-table th:nth-child(1),
+            #validation-table td:nth-child(1) { width: 12mm !important; } /* Test # */
+            #validation-table th:nth-child(2),
+            #validation-table td:nth-child(2) { width: 25mm !important; } /* Method */
+        #validation-table input[type="number"] {
+            font-family: monospace;
+            text-align: right;
+            padding-right: 4px;
+        }
         .action-button { display: block; width: 300px; margin: 30px auto; padding: 15px; font-size: 18px; font-weight: bold; color: #fff; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 8px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
         .action-button:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
         .results-box { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 30px; border-radius: 10px; margin: 30px 0; text-align: center; }
@@ -37,38 +98,491 @@
         .usage-guide li { margin: 8px 0; color: #155724; }
         .warning-box { background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 5px; }
         .warning-box strong { color: #856404; }
+        .advanced-options { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin: 20px 0; display: none; }
+        .input-group-with-toggle { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .input-group-with-toggle input[type="checkbox"] { width: auto; margin: 0; }
+        .uncertainty-indicator { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-left: 8px; }
+        .uncertainty-indicator.high { background-color: #dc3545; }
+        .uncertainty-indicator.medium { background-color: #ffc107; }
+        .uncertainty-indicator.low { background-color: #28a745; }
+        #moisture-balance-section { background-color: rgba(0, 123, 255, 0.05); border-left: 3px solid #007bff; padding: 10px; margin: 10px 0; border-radius: 0 4px 4px 0; }
+        .equipment-traceability-table { background-color: white; color: #333; width: 100%; margin-top: 20px; }
+.section-divider { height: 1px; background: #dee2e6; margin: 24px 0; }
+        .mold-section {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+        .mold-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .equipment-traceability-table input[type="text"] { width: 95%; padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9em; background-color: #fff; }
+        .equipment-traceability-table input[type="text"]:focus { border-color: #007bff; outline: none; box-shadow: 0 0 0 2px rgba(0,123,255,0.25); }
+        .equipment-traceability-table input[type="text"]::placeholder { color: #999; font-style: italic; }
+        .reproducibility-box { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 30px; border-radius: 10px; margin: 30px 0; text-align: center; }
+        .reproducibility-box h2 { color: white; margin-top: 0; }
+        .anova-table { background-color: white; color: #333; margin: 20px 0; border-radius: 8px; overflow: hidden; }
+        .anova-table th { background-color: #17a2b8; }
+        .variance-component { background-color: rgba(255,255,255,0.3); padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .variance-bar { height: 30px; background-color: #28a745; border-radius: 15px; margin: 10px 0; position: relative; }
+        .variance-bar-label { position: absolute; left: 10px; top: 5px; color: white; font-weight: bold; }
         @media print {
-            body { margin: 0; background-color: #fff; }
-            .container { box-shadow: none; }
-            .action-button { display: none; }
-            .cert-section, table { page-break-inside: avoid; }
+            /* Reset and basic styles */
+            body { 
+                margin: 0;
+                padding: 0;
+                background: white;
+                color: black;
+                font-size: 11pt;
+                line-height: 1.4;
+                font-family: "Times New Roman", Times, serif;
+            }
+            
+            /* Container layout */
+            .container { 
+                max-width: 210mm;
+                margin: 15mm auto;
+                padding: 0;
+            }
+            
+            /* Report header */
+            .report-header {
+                text-align: center;
+                margin-bottom: 10mm;
+            }
+            
+            /* Section styling */
+            .report-section {
+                margin: 8mm 0;
+                page-break-inside: avoid;
+            }
+            
+            /* Hide interface elements */
+            .action-button,
+            .debug-info,
+            .help-text,
+            .tab-buttons,
+            button:not(.essential),
+            .input-group:not(.essential) { 
+                display: none !important;
+            }
+            
+            /* Page settings */
+            @page {
+                margin: 20mm;
+                @top-center {
+                    content: "Proctor Test Analysis Report";
+                    font-family: "Times New Roman", Times, serif;
+                }
+                @bottom-center {
+                    content: "Page " counter(page) " of " counter(pages);
+                }
+            }
+            
+            /* Headers and sections */
+            h1 { 
+                font-size: 18pt;
+                margin-bottom: 15mm;
+                border-bottom: 2pt solid #000;
+            }
+            h2 { font-size: 16pt; }
+            h3 { font-size: 14pt; }
+            
+            /* Hide non-printable elements */
+            .action-button,
+            .debug-info,
+            button:not(.tab-button.active) { 
+                display: none !important; 
+            }
+            
+            /* Page breaks */
+            .cert-section,
+            .results-box,
+            .uncertainty-budget,
+            .equipment-traceability-table,
+            .usage-guide { 
+                page-break-inside: avoid;
+                margin: 10mm 0;
+            }
+            
+            /* Tables */
+            table { 
+                border: 1pt solid #000;
+                page-break-inside: avoid;
+                width: 100% !important;
+                margin: 5mm 0;
+            }
+            th {
+                background-color: #f0f0f0 !important;
+                color: #000 !important;
+                border: 1pt solid #000;
+                padding: 2mm;
+                font-weight: bold;
+            }
+            td {
+                border: 1pt solid #000;
+                padding: 2mm;
+            }
+            
+            /* Data tables print styles */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 4mm 0;
+                page-break-inside: avoid;
+            }
+            
+            th {
+                background-color: #f5f5f5;
+                color: black;
+                font-weight: bold;
+                padding: 2mm;
+                border: 0.5pt solid black;
+                font-size: 10pt;
+            }
+            
+            td {
+                padding: 2mm;
+                border: 0.5pt solid black;
+                font-size: 10pt;
+            }
+            
+            /* Test Data Matrix specific styles */
+            #validation-table {
+                margin-bottom: 8mm;
+            }
+            
+            #validation-table th {
+                text-align: center;
+                vertical-align: middle;
+            }
+            
+            #validation-table td {
+                text-align: right;
+                font-family: "Courier New", monospace;
+            }
+            
+            #validation-table td:first-child,
+            #validation-table td:nth-child(2),
+            #validation-table td:nth-child(3) {
+                text-align: center;
+            }
+            
+            /* Results section */
+            .results-box {
+                border: 1pt solid black;
+                padding: 4mm;
+                margin: 6mm 0;
+                background: white;
+            }
+            
+            .results-box h2 {
+                margin-top: 0;
+                font-size: 12pt;
+                border-bottom: 0.5pt solid black;
+                padding-bottom: 2mm;
+            }
+            
+            .result-value {
+                font-size: 14pt;
+                font-weight: bold;
+                text-align: center;
+                margin: 4mm 0;
+            }
+            
+            /* Statistics grid */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 4mm;
+                margin: 4mm 0;
+            }
+            
+            .stat-card {
+                border: 0.5pt solid black;
+                padding: 2mm;
+            }
+            
+            /* Specific styles for uncertainty budget table */
+            #uncertainty-budget table {
+                font-size: 8pt;
+            }
+            #uncertainty-budget th,
+            #uncertainty-budget td {
+                padding: 1.5mm;
+            }
+            #uncertainty-budget tfoot td {
+                font-weight: bold;
+                background-color: #f0f0f0 !important;
+            }
+            
+            /* Results visualization */
+            .uncertainty-bar {
+                border: 1pt solid #000;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            .uncertainty-bar-label {
+                color: #000 !important;
+                text-shadow: none;
+            }
+            
+            /* Gradient backgrounds for boxes */
+            .results-box,
+            .info-banner {
+                background: #fff !important;
+                border: 1pt solid #000;
+                color: #000;
+            }
+            
+            /* Grid layouts */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 5mm;
+            }
+            
+            /* Footer */
+            .container::after {
+                content: "Report generated on " attr(data-print-date);
+                display: block;
+                margin-top: 10mm;
+                font-size: 10pt;
+                text-align: center;
+                border-top: 1pt solid #000;
+                padding-top: 5mm;
+            }
+            
+            /* Links */
+            a {
+                text-decoration: none;
+                color: #000;
+            }
+            
+            /* Page numbers */
+            @page {
+                margin: 20mm;
+                @bottom-right {
+                    content: "Page " counter(page) " of " counter(pages);
+                }
+            }
+        }
+        @media (max-width: 1200px) {
+            .cert-section > div { grid-template-columns: 1fr; }
+        }
+        .debug-info {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .equipment-section {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .equipment-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .equipment-card h4 {
+            margin-top: 0;
+            color: #007bff;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+        .uncertainty-budget {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .uncertainty-budget th, .uncertainty-budget td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .uncertainty-budget th {
+            background-color: #f2f2f2;
+        }
+        .uncertainty-bar {
+            height: 24px;
+            background-color: #007bff;
+            border-radius: 12px;
+            margin: 8px 0;
+            position: relative;
+            max-width: 100%;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+        .uncertainty-bar-label {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            white-space: nowrap;
+            z-index: 1;
+        }
+        #uncertainty-chart-container {
+            padding: 15px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .tab-container {
+            margin: 20px 0;
+        }
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-button {
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .tab-button.active {
+            background-color: #007bff;
+            color: white;
+            border-bottom: 1px solid #007bff;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+        }
+        .tab-content.active {
+            display: block;
         }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <h1>🏢 Laboratory Measurement Uncertainty Determination</h1>
-    <h2>ASTM D1557 - Maximum Dry Density (Top-Down Approach)</h2>
+        <!-- Report Header for Print -->
+        <div class="report-header print-only">
+            <h1 style="font-size: 16pt; margin-bottom: 4mm;">Comprehensive Repeatability & Reproducibility Analysis Report</h1>
+            <div style="font-size: 10pt; margin-bottom: 6mm;">
+                <div>Report Generated: <span id="report-date-time"></span></div>
+                <div>Analysis Method: ISO 5725 & ASTM E691</div>
+                <div>Test Method: ASTM D1557 Maximum Dry Density</div>
+                <div>Laboratory: <span id="lab-name">Quality Control Laboratory</span></div>
+            </div>
+        </div>
+        
+        <!-- Screen-only title -->
+        <h1 class="screen-only">🏢 Comprehensive Repeatability & Reproducibility Analysis</h1>
+        <h2>ISO 5725 & ASTM E691 - Maximum Dry Density (ASTM D1557)</h2>
     
     <div class="info-banner">
-        <h2>📊 Method: Empirical Reproducibility Study</h2>
-        <p>✓ Perform 10 complete tests on homogeneous material</p>
-        <p>✓ Calculate reproducibility standard deviation</p>
-        <p>✓ Includes ALL uncertainty sources: balance, caliper, moisture, repeatability</p>
-        <p>✓ One laboratory uncertainty value for all future tests</p>
-        <p><strong>Reference:</strong> ISO 21748:2017, EURACHEM Guide CG4 (2012), Nordtest TR 537</p>
+        <h2>📊 Method: Precision Analysis for Complete Proctor Tests</h2>
+        <p>✓ Analyzes complete Proctor tests (final MDD values) rather than individual compaction points</p>
+        <p>✓ Supports both repeatability and reproducibility studies</p>
+        <p>✓ ANOVA-based variance component analysis</p>
+        <p>✓ ISO 5725 and ASTM E691 compliant calculations</p>
+        <p>✓ Calculates repeatability limit (r) and reproducibility limit (R)</p>
+        <p>✓ Comprehensive equipment uncertainty analysis for ISO/IEC 17025 compliance</p>
+        <p><strong>Reference:</strong> ISO 5725:2019, ASTM E691-23, GUM (JCGM 100:2008)</p>
     </div>
 
     <div class="cert-section">
-        <h3>📋 Calibration Certificate Data</h3>
-        <p style="text-align: center; color: #666; margin-bottom: 20px;">
-            <em>Enter data from your balance and caliper calibration certificates</em>
-        </p>
+        <h3>📋 Study Configuration</h3>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-            <div>
-                <h4 style="color: #2196F3; border-bottom: 2px solid #2196F3; padding-bottom: 5px;">⚖️ Balance (Weighing Scale)</h4>
+        <div class="input-group">
+            <label>Study Type:</label>
+            <select id="study_type" onchange="updateStudyType()">
+                <option value="repeatability">Repeatability (Same Operator/Day)</option>
+                <option value="within-lab">Within-Lab Reproducibility (Different Operators/Days)</option>
+                <option value="between-lab">Between-Lab Reproducibility (Different Labs)</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label>Number of Complete Tests (n):</label>
+            <input type="number" id="num_tests" value="10" min="3" max="50" onchange="updateTestTable()">
+        </div>
+        
+        <div id="lab-section" style="display:none;">
+            <div class="input-group">
+                <label>Number of Labs:</label>
+                <input type="number" id="num_labs" value="3" min="2" max="10">
+            </div>
+        </div>
+        
+        <div class="input-group">
+            <label>ASTM D1557 Method:</label>
+            <select id="astm_method">
+                <option value="A">Method A (4-in. mold, 25 blows/layer)</option>
+                <option value="B">Method B (4-in. mold, 25 blows/layer)</option>
+                <option value="C" selected>Method C (6-in. mold, 56 blows/layer)</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label>Confidence Level:</label>
+            <select id="confidence_level">
+                <option value="95">95% (Standard)</option>
+                <option value="99">99% (High Confidence)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="equipment-section">
+        <h3>⚖️ Equipment Calibration & Uncertainty Data</h3>
+        <p style="color: #666; margin-bottom: 15px;">Enter calibration certificate data for all equipment used in the Proctor test. This information is critical for ISO/IEC 17025 compliance and demonstrates traceability to national standards.</p>
+        
+        <div class="equipment-grid">
+            <div class="equipment-card">
+                <h4>🔬 Balance (Proctor Test)</h4>
                 <div class="input-group">
                     <label>Expanded Uncertainty (U) in grams:</label>
                     <input type="number" id="u_balance_cert" value="1" step="0.01">
@@ -85,13 +599,33 @@
                     <label>Degrees of Freedom (ν):</label>
                     <input type="number" id="nu_balance" value="50">
                 </div>
+                <div class="input-group">
+                    <label>Calibration Date:</label>
+                    <input type="date" id="cal_date_balance" value="2023-01-15">
+                </div>
+                <div class="input-group">
+                    <label>Next Due Date:</label>
+                    <input type="date" id="due_date_balance" value="2024-01-15">
+                </div>
+                <div class="input-group">
+                    <label>Calibration Laboratory:</label>
+                    <input type="text" id="balance_cal_lab" placeholder="e.g., NIST Calibration Lab">
+                </div>
+                <div class="input-group">
+                    <label>Certificate Number:</label>
+                    <input type="text" id="balance_cert_num" placeholder="e.g., CAL-2023-001">
+                </div>
+                <div class="input-group">
+                    <label>Traceability:</label>
+                    <input type="text" id="balance_traceability" placeholder="e.g., NIST Mass Standards">
+                </div>
             </div>
             
-            <div>
-                <h4 style="color: #2196F3; border-bottom: 2px solid #2196F3; padding-bottom: 5px;">📏 Caliper / Mold Dimensions</h4>
+            <div class="equipment-card">
+                <h4>📏 Caliper / Mold Dimensions</h4>
                 <div class="input-group">
                     <label>Expanded Uncertainty (U) in mm:</label>
-                    <input type="number" id="u_caliper_cert" value="0.65" step="0.01">
+                    <input type="number" id="u_caliper_cert" value="0.04" step="0.01">
                 </div>
                 <div class="input-group">
                     <label>Coverage Factor (k):</label>
@@ -99,214 +633,446 @@
                 </div>
                 <div class="input-group">
                     <label>Resolution (mm):</label>
-                    <input type="number" id="res_caliper" value="0.01" step="0.001">
+                    <input type="number" id="res_caliper" value="0.02" step="0.001">
                 </div>
                 <div class="input-group">
                     <label>Degrees of Freedom (ν):</label>
-                    <input type="number" id="nu_caliper" value="10">
+                    <input type="number" id="nu_caliper" value="30">
+                </div>
+                <div class="input-group">
+                    <label>Calibration Date:</label>
+                    <input type="date" id="cal_date_caliper" value="2023-02-10">
+                </div>
+                <div class="input-group">
+                    <label>Next Due Date:</label>
+                    <input type="date" id="due_date_caliper" value="2024-02-10">
+                </div>
+                <div class="input-group">
+                    <label>Calibration Laboratory:</label>
+                    <input type="text" id="caliper_cal_lab" placeholder="e.g., NIST Calibration Lab">
+                </div>
+                <div class="input-group">
+                    <label>Certificate Number:</label>
+                    <input type="text" id="caliper_cert_num" placeholder="e.g., CAL-2023-002">
+                </div>
+                <div class="input-group">
+                    <label>Traceability:</label>
+                    <input type="text" id="caliper_traceability" placeholder="e.g., NIST Length Standards">
                 </div>
             </div>
         </div>
         
-        <div style="margin-top: 20px; padding: 15px; background-color: rgba(255,255,255,0.7); border-radius: 5px;">
-            <h4 style="color: #2196F3; margin-top: 0;">📐 Mold Standard Dimensions</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="input-group">
-                    <label>Internal Diameter (mm):</label>
-                    <input type="number" id="mold_diameter" value="152.4" step="0.1">
-                </div>
-                <div class="input-group">
-                    <label>Internal Height (mm):</label>
-                    <input type="number" id="mold_height" value="116.4" step="0.1">
-                </div>
+    </div>
+    
+    <!-- Divider for visual separation -->
+    <div class="section-divider"></div>
+
+    <!-- 📐 Mold Standard Dimensions (separate container below current view) -->
+    <div class="mold-section">
+        <h3>📐 Mold Standard Dimensions</h3>
+        <div class="mold-grid">
+            <div class="input-group">
+                <label>Internal Diameter (mm):</label>
+                <input type="number" id="mold_diameter" value="152.4" step="0.1">
+            </div>
+            <div class="input-group">
+                <label>Internal Height (mm):</label>
+                <input type="number" id="mold_height" value="116.4" step="0.1">
             </div>
         </div>
     </div>
+    </div>
+
+    <div class="advanced-options" id="advanced-options">
+        <h3>🔧 Advanced Analysis Options</h3>
+        
+        <div class="input-group-with-toggle">
+            <input type="checkbox" id="include_homogeneity" checked>
+            <label for="include_homogeneity">Include Soil Homogeneity Uncertainty</label>
+        </div>
+        <div class="input-group">
+            <label>Homogeneity Uncertainty (%):</label>
+            <input type="number" id="u_homogeneity" value="0.8" step="0.1">
+        </div>
+        
+        <div class="input-group-with-toggle">
+            <input type="checkbox" id="include_temperature">
+            <label for="include_temperature">Include Temperature Effect</label>
+        </div>
+        <div class="input-group">
+            <label>Temperature Change (ΔT in °C):</label>
+            <input type="number" id="temp_change" value="0" step="0.1">
+        </div>
+        
+        <div class="input-group-with-toggle">
+            <input type="checkbox" id="include_equipment_uncertainty" checked>
+            <label for="include_equipment_uncertainty">Include Equipment Uncertainty in Budget</label>
+        </div>
+    </div>
+
+    <button class="action-button" onclick="toggleAdvancedOptions()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        🔧 Toggle Advanced Options
+    </button>
 
     <div class="warning-box">
         <strong>⚠️ Important Instructions:</strong>
         <ul style="margin: 10px 0; padding-left: 20px;">
-            <li>Use homogeneous, representative soil sample for all 10 tests</li>
-            <li>Follow ASTM D1557 procedure exactly for each test</li>
-            <li>Perform tests under repeatability conditions (same operator, equipment, day)</li>
-            <li>Enter ALL measured values (not calculated densities)</li>
+            <li><strong>Repeatability:</strong> Same operator, same equipment, same day</li>
+            <li><strong>Within-Lab Reproducibility:</strong> Different operators, different days, same lab</li>
+            <li><strong>Between-Lab Reproducibility:</strong> Different labs, different operators</li>
+            <li>Enter the final Maximum Dry Density (MDD) value from each complete test</li>
+            <li>Each complete test should include at least 4 compaction points at different moisture contents</li>
+            <li>Use the same curve-fitting method for all tests</li>
+            <li>Document any corrections applied (oversize, etc.)</li>
+            <li>Ensure all equipment calibration data is current and traceable to national standards</li>
         </ul>
     </div>
 
-    <h2 style="margin-top: 40px;">🧪 Validation Study: 10 Complete Tests</h2>
+    <h2 style="margin-top: 40px;">🧪 Complete Test Data Matrix</h2>
     
     <table id="validation-table">
-        <thead>
-            <tr>
-                <th>Test #</th>
-                <th>Mold+Wet<br>Soil (g)</th>
-                <th>Empty<br>Mold (g)</th>
-                <th>Container+<br>Wet Soil (g)</th>
-                <th>Container+<br>Dry Soil (g)</th>
-                <th>Empty<br>Container (g)</th>
-                <th>MDD<br>(g/cm³)</th>
-            </tr>
+        <thead id="table-head">
         </thead>
         <tbody id="test-data-body">
         </tbody>
     </table>
 
-    <button class="action-button" onclick="calculateLabUncertainty()">
-        🧮 Calculate Laboratory Uncertainty
+    <button class="action-button" onclick="calculatePrecision()">
+        🧮 Calculate Precision Analysis
     </button>
 
-    <div class="results-box" id="results-box" style="display: none;">
-        <h2>🎯 Laboratory Certified Measurement Uncertainty</h2>
-        
-        <div class="result-value">
-            U = ±<span id="final-uncertainty">0.000</span> g/cm³
+
+
+    <div class="tab-container">
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="showTab('precision-results')">Precision Results</button>
+            <button class="tab-button" onclick="showTab('uncertainty-budget')">Uncertainty Budget</button>
+            <button class="tab-button" onclick="showTab('equipment-traceability')">Equipment Traceability</button>
         </div>
         
-        <div class="result-label">
-            Coverage Factor: k = <span id="coverage-factor">0.00</span> (95% confidence, ν = <span id="dof">0</span>)
+        <div id="precision-results" class="tab-content active">
+            <div class="results-box" id="results-box" style="display: none;">
+                <h2>🎯 Precision Analysis Results</h2>
+                
+                <div class="result-value">
+                    s<sub>R</sub> = <span id="reproducibility-std">0.000</span> g/cm³
+                </div>
+                
+                <div class="result-label">
+                    Reproducibility Limit: R = <span id="reproducibility-limit">0.000</span> g/cm³
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label">Mean MDD</div>
+                        <div class="value"><span id="mean-mdd">0.000</span> g/cm³</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Repeatability Std (s<sub>r</sub>)</div>
+                        <div class="value"><span id="repeatability-std">0.000</span> g/cm³</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Repeatability Limit (r)</div>
+                        <div class="value"><span id="repeatability-limit">0.000</span> g/cm³</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Reproducibility Std (s<sub>R</sub>)</div>
+                        <div class="value"><span id="reproducibility-std2">0.000</span> g/cm³</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; background-color: rgba(255,255,255,0.3); border-radius: 8px;">
+                    <h3 style="margin-top: 0;">📊 ANOVA Table</h3>
+                    <table class="anova-table">
+                        <thead>
+                            <tr>
+                                <th>Source of Variation</th>
+                                <th>Sum of Squares</th>
+                                <th>Degrees of Freedom</th>
+                                <th>Mean Square</th>
+                                <th>F-Value</th>
+                                <th>Variance Component</th>
+                            </tr>
+                        </thead>
+                        <tbody id="anova-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="reproducibility-box" id="reproducibility-box" style="display: none;">
+                <h2>🔄 Reproducibility Analysis</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label" id="between-group-label">Between-Lab Variance</div>
+                        <div class="value"><span id="between-group-var">0.000</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Repeatability Variance</div>
+                        <div class="value"><span id="repeatability-var">0.000</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Total Variance</div>
+                        <div class="value"><span id="total-var">0.000</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Reproducibility Variance</div>
+                        <div class="value"><span id="reproducibility-var">0.000</span></div>
+                    </div>
+                </div>
+                
+                <div class="variance-component">
+                    <h4>Variance Components Breakdown</h4>
+                    <div class="variance-bar" id="between-group-bar" style="width: 0%">
+                        <span class="variance-bar-label">Between-Group: 0%</span>
+                    </div>
+                    <div class="variance-bar" id="repeatability-bar" style="width: 0%; background-color: #17a2b8;">
+                        <span class="variance-bar-label">Repeatability: 0%</span>
+                    </div>
+                </div>
+                
+                <table style="background-color: white; color: #333; margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th>Group</th>
+                            <th>Mean MDD</th>
+                            <th>Std Dev</th>
+                            <th>Tests Count</th>
+                        </tr>
+                    </thead>
+                    <tbody id="group-table">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="results-box" id="uncertainty-box" style="display: none;">
+                <h2>🎯 Measurement Uncertainty</h2>
+                
+                <div class="result-value">
+                    U = ±<span id="final-uncertainty">0.000</span> g/cm³
+                </div>
+                
+                <div class="result-label">
+                    Coverage Factor: k = <span id="coverage-factor">0.00</span> (95% confidence, ν = <span id="dof">0</span>)
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="label">Relative Uncertainty</div>
+                        <div class="value"><span id="rel-unc">0.0</span> %</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">Valid Until</div>
+                        <div class="value"><span id="valid-date">---</span></div>
+                    </div>
+                </div>
+            </div>
         </div>
         
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="label">Mean MDD</div>
-                <div class="value"><span id="mean-mdd">0.000</span> g/cm³</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Std. Deviation</div>
-                <div class="value"><span id="std-dev">0.000</span> g/cm³</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Relative Uncertainty</div>
-                <div class="value"><span id="rel-unc">0.0</span> %</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Valid Until</div>
-                <div class="value"><span id="valid-date">---</span></div>
+        <div id="uncertainty-budget" class="tab-content">
+            <div class="results-box" style="display: block; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <h2>📊 Detailed Uncertainty Budget</h2>
+                <p style="margin-bottom: 20px;">This uncertainty budget demonstrates how each piece of equipment contributes to the overall measurement uncertainty, satisfying ISO/IEC 17025 requirements for uncertainty evaluation.</p>
+                
+                <table style="background-color: white; color: #333; width: 100%; margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th>Uncertainty Source</th>
+                            <th>Symbol</th>
+                            <th>Value</th>
+                            <th>Unit</th>
+                            <th>Distribution</th>
+                            <th>Std Uncertainty (u)</th>
+                            <th>Sensitivity Coefficient</th>
+                            <th>Contribution to u<sub>c</sub></th>
+                            <th>% Contribution</th>
+                            <th>Degrees of Freedom</th>
+                        </tr>
+                    </thead>
+                    <tbody id="uncertainty-budget-table">
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                    <tfoot>
+                        <tr style="background-color: #f2f2f2; font-weight: bold;">
+                            <td colspan="7">Combined Standard Uncertainty (u<sub>c</sub>)</td>
+                            <td id="combined-uncertainty-value">0.000</td>
+                            <td>100%</td>
+                            <td id="effective-dof-value">0</td>
+                        </tr>
+                        <tr style="background-color: #e9ecef; font-weight: bold;">
+                            <td colspan="7">Expanded Uncertainty (U, k=2)</td>
+                            <td id="expanded-uncertainty-value">0.000</td>
+                            <td>95% Confidence</td>
+                            <td id="coverage-factor-value">2.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+                <div style="margin-top: 30px; padding: 20px; background-color: rgba(255,255,255,0.3); border-radius: 8px;">
+                    <h3 style="margin-top: 0;">Uncertainty Contribution Chart</h3>
+                    <div id="uncertainty-chart-container">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
             </div>
         </div>
         
-        <div style="margin-top: 30px; padding: 20px; background-color: rgba(255,255,255,0.3); border-radius: 8px;">
-            <h3 style="margin-top: 0;">📝 Uncertainty Budget Summary</h3>
-            <table style="background-color: white; color: #333;">
-                <thead>
-                    <tr>
-                        <th>Component</th>
-                        <th>Contribution</th>
-                        <th>Notes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Repeatability</td>
-                        <td id="contrib-rep">--</td>
-                        <td>Within-test variation</td>
-                    </tr>
-                    <tr>
-                        <td>Balance (Mass)</td>
-                        <td id="contrib-balance">--</td>
-                        <td>From calibration certificate</td>
-                    </tr>
-                    <tr>
-                        <td>Caliper (Volume)</td>
-                        <td id="contrib-caliper">--</td>
-                        <td>Dominant source typically</td>
-                    </tr>
-                    <tr>
-                        <td>Moisture Content</td>
-                        <td id="contrib-moisture">--</td>
-                        <td>Oven drying uncertainty</td>
-                    </tr>
-                    <tr style="background-color: #d4edda; font-weight: bold;">
-                        <td>All Sources Combined</td>
-                        <td colspan="2">Included in reproducibility std. deviation</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div id="equipment-traceability" class="tab-content">
+            <div class="results-box" style="display: block; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                <h2>🔗 Equipment Traceability & Calibration Status</h2>
+                <p style="margin-bottom: 20px;">This section demonstrates traceability to national standards and current calibration status, satisfying ISO/IEC 17025 requirements for equipment verification.</p>
+                
+                <table style="background-color: white; color: #333; width: 100%; margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th>Equipment</th>
+                            <th>Calibration Date</th>
+                            <th>Next Due Date</th>
+                            <th>Days Until Due</th>
+                            <th>Status</th>
+                            <th>Calibration Laboratory</th>
+                            <th>Certificate Number</th>
+                            <th>Traceability</th>
+                        </tr>
+                    </thead>
+                    <tbody id="equipment-traceability-table">
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 30px; padding: 20px; background-color: rgba(255,255,255,0.3); border-radius: 8px;">
+                    <h3 style="margin-top: 0;">Calibration Certificates</h3>
+                    <p>Calibration certificates for all equipment are maintained in the laboratory quality management system and are available for review by assessors.</p>
+                    <ul style="text-align: left; margin-top: 15px;">
+                        <li>All calibrations are performed by ISO/IEC 17025 accredited laboratories</li>
+                        <li>Calibration standards are traceable to national standards (NIST)</li>
+                        <li>Calibration certificates include measurement uncertainty and compliance statements</li>
+                        <li>Equipment is verified in-house between scheduled calibrations</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="usage-guide">
-        <h3>📖 How to Use This Result in Daily Testing</h3>
+        <h3>📖 How to Use These Results</h3>
         <ul>
-            <li><strong>For every client test report:</strong> Use the calculated uncertainty value above</li>
-            <li><strong>Example Report Format:</strong>
+            <li><strong>For Repeatability:</strong>
                 <ul>
-                    <li>Maximum Dry Density: 2.123 g/cm³</li>
-                    <li>Expanded Uncertainty: ±0.055 g/cm³</li>
-                    <li>Coverage Factor: k = 2.26 (95% confidence)</li>
-                    <li>Result: <strong>MDD = 2.123 ± 0.055 g/cm³</strong></li>
+                    <li>Repeatability limit (r): Maximum difference between two results under same conditions</li>
+                    <li>Use for quality control within the same lab</li>
                 </ul>
             </li>
-            <li><strong>Validity Period:</strong> Update this study annually or when:
+            <li><strong>For Reproducibility:</strong>
                 <ul>
-                    <li>Equipment is recalibrated</li>
-                    <li>Test procedure changes</li>
-                    <li>Operator personnel change significantly</li>
-                    <li>Proficiency test results suggest deviation</li>
+                    <li>Reproducibility limit (R): Maximum difference between two results from different labs</li>
+                    <li>Use for comparing results between laboratories</li>
                 </ul>
             </li>
-            <li><strong>For ISO 17025 Assessment:</strong> Print this report and keep with quality records</li>
+            <li><strong>For Uncertainty:</strong>
+                <ul>
+                    <li>Use the expanded uncertainty (U) for all test reports</li>
+                    <li>Report as: MDD = X.XXX ± U.XXX g/cm³ (k=X.X, 95% confidence)</li>
+                </ul>
+            </li>
+            <li><strong>For ISO/IEC 17025 Assessment:</strong> Print this report and keep with quality records</li>
         </ul>
     </div>
 
-    <button class="action-button" onclick="window.print()" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
-        🖨️ Print Laboratory Uncertainty Certificate
+    <button class="action-button" onclick="preparePrint()" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+        🖨️ Print Precision Analysis Report
     </button>
+    
+    <script>
+        function preparePrint() {
+            // Set current date for the report
+            const now = new Date();
+            document.querySelector('.container').setAttribute('data-print-date', 
+                now.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+            );
+            
+            // Ensure all relevant tab content is visible for printing
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                if (tab.querySelector('.results-box, .uncertainty-budget, .equipment-traceability-table')) {
+                    tab.style.display = 'block';
+                }
+            });
+            
+            // Trigger print
+            window.print();
+            
+            // Restore tab visibility after printing
+            setTimeout(() => {
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    if (!tab.classList.contains('active')) {
+                        tab.style.display = 'none';
+                    }
+                });
+            }, 1000);
+        }
+    </script>
 
     <div style="text-align: center; margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
-        <p style="color: #666; margin: 5px 0;"><strong>Compliance:</strong> ISO/IEC 17025:2017, ASTM D1557, GUM (JCGM 100:2008)</p>
-        <p style="color: #666; margin: 5px 0;"><strong>Method:</strong> Top-Down Approach (Empirical Reproducibility)</p>
+        <p style="color: #666; margin: 5px 0;"><strong>Compliance:</strong> ISO 5725:2019, ASTM E691-23, ISO/IEC 17025:2017, GUM (JCGM 100:2008)</p>
+        <p style="color: #666; margin: 5px 0;"><strong>Method:</strong> Precision Analysis with ANOVA for Complete Proctor Tests</p>
         <p style="color: #666; margin: 5px 0;"><strong>Date Generated:</strong> <span id="report-date"></span></p>
     </div>
 </div>
 
 <script>
-    // T-distribution table for 95% confidence
-    const tTable = {
+    // T-distribution table for 95% and 99% confidence
+    const tTable95 = {
         1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571,
         6: 2.447, 7: 2.365, 8: 2.306, 9: 2.262, 10: 2.228,
         15: 2.131, 20: 2.086, 25: 2.060, 30: 2.042, 40: 2.021,
         50: 2.009, 60: 2.000, 80: 1.990, 100: 1.984, 120: 1.980,
         'inf': 1.960
     };
+    
+    const tTable99 = {
+        1: 63.657, 2: 9.925, 3: 5.841, 4: 4.604, 5: 4.032,
+        6: 3.707, 7: 3.499, 8: 3.355, 9: 3.250, 10: 3.169,
+        15: 2.947, 20: 2.845, 25: 2.787, 30: 2.750, 40: 2.704,
+        50: 2.678, 60: 2.660, 80: 2.639, 100: 2.626, 120: 2.617,
+        'inf': 2.576
+    };
 
-    function getTValue(dof) {
-        if (dof >= 120) return tTable['inf'];
-        const keys = Object.keys(tTable).map(Number).filter(k => !isNaN(k)).sort((a,b) => a-b);
-        for (let k of keys) {
-            if (dof <= k) return tTable[k];
-        }
-        return tTable['inf'];
-    }
-
-    // Default test data
-    const defaultData = [
-        { c4: 9025.5, c5: 4350.1, c6: 550.8, c7: 512.2, c8: 115.3 },
-        { c4: 9035.1, c5: 4350.5, c6: 561.2, c7: 521.9, c8: 116.1 },
-        { c4: 9029.8, c5: 4349.8, c6: 545.4, c7: 507.5, c8: 115.0 },
-        { c4: 9040.2, c5: 4350.2, c6: 555.9, c7: 516.8, c8: 115.8 },
-        { c4: 9022.3, c5: 4350.6, c6: 565.1, c7: 525.0, c8: 116.4 },
-        { c4: 9033.7, c5: 4349.9, c6: 549.3, c7: 511.0, c8: 115.1 },
-        { c4: 9045.5, c5: 4350.3, c6: 558.8, c7: 519.5, c8: 115.9 },
-        { c4: 9038.1, c5: 4350.8, c6: 563.3, c7: 523.3, c8: 116.2 },
-        { c4: 9027.6, c5: 4350.1, c6: 552.7, c7: 514.0, c8: 115.5 },
-        { c4: 9031.9, c5: 4350.4, c6: 557.0, c7: 518.0, c8: 115.7 }
+    // Default test data for complete tests
+    const defaultCompleteTestData = [
+        { lab: "A", operator: "1", method: "C", mdd: 1.925, omc: 12.5, points: 5, correction: "None", uncertainty: "Internal" },
+        { lab: "A", operator: "1", method: "C", mdd: 1.931, omc: 12.3, points: 5, correction: "None", uncertainty: "Internal" },
+        { lab: "A", operator: "2", method: "C", mdd: 1.918, omc: 12.7, points: 5, correction: "None", uncertainty: "Internal" },
+        { lab: "A", operator: "2", method: "C", mdd: 1.922, omc: 12.6, points: 5, correction: "None", uncertainty: "Internal" },
+        { lab: "B", operator: "3", method: "C", mdd: 1.935, omc: 12.2, points: 5, correction: "None", uncertainty: "Internal" },
+        { lab: "B", operator: "3", method: "C", mdd: 1.928, omc: 12.4, points: 5, correction: "None", uncertainty: "Internal" },
+        { lab: "B", operator: "4", method: "C", mdd: 1.941, omc: 12.1, points: 5, correction: "None", uncertainty: "Internal" },
+        { lab: "C", operator: "5", method: "C", mdd: 1.915, omc: 12.8, points: 5, correction: "None", uncertainty: "Internal" },
+        { lab: "C", operator: "5", method: "C", mdd: 1.921, omc: 12.6, points: 5, correction: "None", uncertainty: "Internal" },
+        { lab: "C", operator: "6", method: "C", mdd: 1.918, omc: 12.7, points: 5, correction: "None", uncertainty: "Internal" }
     ];
 
-    function createTestTable() {
-        const tbody = document.getElementById('test-data-body');
-        for (let i = 0; i < 10; i++) {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td style="background-color: #f8f9fa; font-weight: bold;">${i + 1}</td>
-                <td><input type="number" id="t${i}_c4" value="${defaultData[i].c4}" step="0.1"></td>
-                <td><input type="number" id="t${i}_c5" value="${defaultData[i].c5}" step="0.1"></td>
-                <td><input type="number" id="t${i}_c6" value="${defaultData[i].c6}" step="0.1"></td>
-                <td><input type="number" id="t${i}_c7" value="${defaultData[i].c7}" step="0.1"></td>
-                <td><input type="number" id="t${i}_c8" value="${defaultData[i].c8}" step="0.1"></td>
-                <td class="output" id="t${i}_mdd">---</td>
-            `;
-            tbody.appendChild(row);
+    function getTValue(dof, confidence = 95) {
+        if (confidence === 99) {
+            if (dof >= 120) return tTable99['inf'];
+            const keys = Object.keys(tTable99).map(Number).filter(k => !isNaN(k)).sort((a,b) => a-b);
+            for (let k of keys) {
+                if (dof <= k) return tTable99[k];
+            }
+            return tTable99['inf'];
+        } else {
+            if (dof >= 120) return tTable95['inf'];
+            const keys = Object.keys(tTable95).map(Number).filter(k => !isNaN(k)).sort((a,b) => a-b);
+            for (let k of keys) {
+                if (dof <= k) return tTable95[k];
+            }
+            return tTable95['inf'];
         }
     }
 
@@ -322,93 +1088,955 @@
         }
     }
 
-    function calculateMDD(c4, c5, c6, c7, c8, diameter, height) {
-        const Mw = c6 - c7;
-        const Ms = c7 - c8;
-        const w = (Mw / Ms) * 100;
-        const V = (Math.PI * Math.pow(diameter / 2, 2) * height) / 1000;
-        const Mt = c4 - c5;
-        const rho_wet = Mt / V;
-        const rho_d = rho_wet / (1 + (w / 100));
-        return rho_d;
-    }
-
-    function calculateLabUncertainty() {
-        const diameter = getVal('mold_diameter');
-        const height = getVal('mold_height');
+    function updateStudyType() {
+        const studyType = document.getElementById('study_type').value;
+        const labSection = document.getElementById('lab-section');
         
-        // Calculate MDD for all 10 tests
-        const mddValues = [];
-        for (let i = 0; i < 10; i++) {
-            const c4 = getVal(`t${i}_c4`);
-            const c5 = getVal(`t${i}_c5`);
-            const c6 = getVal(`t${i}_c6`);
-            const c7 = getVal(`t${i}_c7`);
-            const c8 = getVal(`t${i}_c8`);
-            
-            const mdd = calculateMDD(c4, c5, c6, c7, c8, diameter, height);
-            mddValues.push(mdd);
-            setVal(`t${i}_mdd`, mdd, 4);
+        if (studyType === 'between-lab') {
+            labSection.style.display = 'block';
+        } else {
+            labSection.style.display = 'none';
         }
         
-        // Calculate statistics
-        const n = 10;
-        const mean = mddValues.reduce((a, b) => a + b, 0) / n;
-        const variance = mddValues.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (n - 1);
-        const stdDev = Math.sqrt(variance);
+        updateTestTable();
+    }
+
+    function toggleAdvancedOptions() {
+        const options = document.getElementById('advanced-options');
+        options.style.display = options.style.display === 'none' ? 'block' : 'none';
+    }
+
+
+
+    function showTab(tabId) {
+        // Hide all tab contents
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabContents.forEach(content => {
+            content.classList.remove('active');
+        });
         
-        // Calculate uncertainty contribution from equipment
-        const u_balance_std = getVal('u_balance_cert') / getVal('k_balance');
-        const u_caliper_std = getVal('u_caliper_cert') / getVal('k_caliper');
+        // Remove active class from all tab buttons
+        const tabButtons = document.querySelectorAll('.tab-button');
+        tabButtons.forEach(button => {
+            button.classList.remove('active');
+        });
         
-        // Estimate individual contributions (informational only)
-        const typical_mass = 4700;
-        const typical_volume = 2124;
-        const typical_w = 10;
+        // Show the selected tab content
+        document.getElementById(tabId).classList.add('active');
         
-        const contrib_balance = (Math.sqrt(2) * u_balance_std) / (typical_volume * 1.1);
-        const contrib_caliper = (typical_mass / Math.pow(typical_volume, 2)) * u_caliper_std * 2 * typical_volume / diameter;
-        const contrib_moisture = typical_mass / (typical_volume * Math.pow(1.1, 2)) * 0.003;
+        // Add active class to the clicked button
+        event.target.classList.add('active');
+    }
+
+    function calculatePrecision() {
+        const n = parseInt(document.getElementById('num_tests')?.value) || 10;
+        const studyType = document.getElementById('study_type')?.value || 'between-lab';
         
-        const total_sys = Math.sqrt(Math.pow(contrib_balance, 2) + Math.pow(contrib_caliper, 2) + Math.pow(contrib_moisture, 2));
+        // Collect test data
+        const testData = [];
+        for (let i = 0; i < n; i++) {
+            testData.push({
+                lab: document.getElementById(`t${i}_lab`)?.value || 'A',
+                operator: document.getElementById(`t${i}_operator`)?.value || '1',
+                method: document.getElementById(`t${i}_method`)?.value || 'C',
+                mdd: parseFloat(document.getElementById(`t${i}_mdd`)?.value) || 0,
+                points: parseInt(document.getElementById(`t${i}_points`)?.value) || 5,
+                correction: document.getElementById(`t${i}_correction`)?.value || 'None',
+                uncertainty: document.getElementById(`t${i}_uncertainty`)?.value || 'Internal'
+            });
+        }
+
+        // Calculate basic statistics
+        const mddValues = testData.map(d => d.mdd);
+        const overallMean = mddValues.reduce((sum, val) => sum + val, 0) / n;
+        const overallVariance = mddValues.reduce((sum, val) => sum + Math.pow(val - overallMean, 2), 0) / (n - 1);
+        const overallStdDev = Math.sqrt(overallVariance);
+        setVal('mean-mdd', overallMean, 4);
         
-        // Top-down approach: reproducibility includes everything
-        const dof = n - 1;
-        const k = getTValue(dof);
-        const U = k * stdDev;
-        const relUnc = (U / mean) * 100;
+        // Group data based on study type
+        let groups = {};
+        let groupLabel = "Test";
         
-        // Display results
+        if (studyType === 'repeatability') {
+            // For repeatability, each test is its own group
+            testData.forEach((d, i) => {
+                groups[i] = [d];
+            });
+            groupLabel = "Test";
+        } else if (studyType === 'within-lab') {
+            // For within-lab, group by operator
+            testData.forEach(d => {
+                if (!groups[d.operator]) groups[d.operator] = [];
+                groups[d.operator].push(d);
+            });
+            groupLabel = "Operator";
+        } else {
+            // For between-lab, group by lab
+            testData.forEach(d => {
+                if (!groups[d.lab]) groups[d.lab] = [];
+                groups[d.lab].push(d);
+            });
+            groupLabel = "Lab";
+        }
+        
+        // Calculate precision parameters
+        let s_r, s_L, s_R, anova;
+        
+        if (studyType === 'repeatability') {
+            // For repeatability, s_r is the standard deviation of all results
+            s_r = overallStdDev;
+            s_L = 0;
+            s_R = s_r;
+        } else {
+            // For reproducibility, calculate ANOVA
+            anova = calculateANOVA(testData, groups, studyType);
+            s_r = Math.sqrt(anova.withinGroupMS);
+            s_L = Math.sqrt(Math.max(0, (anova.betweenGroupMS - anova.withinGroupMS) / anova.avgGroupSize));
+            s_R = Math.sqrt(s_r * s_r + s_L * s_L);
+        }
+        
+        // Calculate precision limits
+        const confidence = 95;
+        const tValue = getTValue(n - 1, confidence);
+        const r = tValue * Math.sqrt(2) * s_r; // Repeatability limit
+        const R = tValue * Math.sqrt(2) * s_R; // Reproducibility limit;
+        
+        // Display precision results
         document.getElementById('results-box').style.display = 'block';
-        setVal('final-uncertainty', U, 4);
-        setVal('coverage-factor', k, 3);
-        setVal('dof', dof, 0);
-        setVal('mean-mdd', mean, 4);
-        setVal('std-dev', stdDev, 4);
-        setVal('rel-unc', relUnc, 2);
+        setVal('repeatability-std', s_r, 4);
+        setVal('repeatability-limit', r, 4);
+        setVal('reproducibility-std', s_R, 4);
+        setVal('reproducibility-limit', R, 4);
+        setVal('reproducibility-std2', s_R, 4);
         
-        // Contributions (informational estimates)
-        const rep_percent = (Math.pow(stdDev, 2) - Math.pow(total_sys, 2)) / Math.pow(stdDev, 2) * 100;
-        setVal('contrib-rep', rep_percent > 0 ? rep_percent.toFixed(1) + '%' : 'Included', 0);
-        setVal('contrib-balance', (Math.pow(contrib_balance, 2) / Math.pow(stdDev, 2) * 100).toFixed(1) + '%', 0);
-        setVal('contrib-caliper', (Math.pow(contrib_caliper, 2) / Math.pow(stdDev, 2) * 100).toFixed(1) + '%', 0);
-        setVal('contrib-moisture', (Math.pow(contrib_moisture, 2) / Math.pow(stdDev, 2) * 100).toFixed(1) + '%', 0);
+        // Display ANOVA table for reproducibility studies
+        if (studyType !== 'repeatability') {
+            displayANOVATable(anova);
+        } else {
+            // For repeatability, show a simplified ANOVA table
+            displaySimpleANOVATable(overallVariance, n);
+        }
         
-        // Valid date (1 year from now)
-        const today = new Date();
-        const validUntil = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
-        document.getElementById('valid-date').textContent = validUntil.toLocaleDateString('en-GB');
+        // Display reproducibility analysis
+        document.getElementById('reproducibility-box').style.display = 'block';
+        displayReproducibilityAnalysis(groups, groupLabel, s_r, s_L, s_R);
+        
+        // Calculate measurement uncertainty
+        let effective_dof;
+        if (studyType === 'repeatability') {
+            effective_dof = n - 1;
+        } else {
+            const s_r2 = s_r * s_r;
+            const s_L2 = s_L * s_L;
+            const s_R2 = s_r2 + s_L2;
+
+            const nu_r = anova.dfWithin;   // = N - p
+            const nu_L = anova.dfBetween;  // = p - 1
+
+            if (s_L2 <= 0) {
+                // Only repeatability contributes
+                effective_dof = nu_r;
+            } else {
+                const numerator = s_R2 * s_R2;
+                const denominator = (s_r2 * s_r2) / nu_r + (s_L2 * s_L2) / nu_L;
+                effective_dof = denominator > 0 ? numerator / denominator : 1;
+                effective_dof = Math.min(effective_dof, 1e6); // Avoid inf
+            }
+        }
+        
+        // Calculate measurement uncertainty
+        calculateMeasurementUncertainty(s_r, s_R, confidence, effective_dof, overallMean);
+        
+        // Calculate equipment uncertainty contributions
+        calculateEquipmentUncertainty(overallMean);
+        
+        // Update equipment traceability table
+        updateEquipmentTraceability();
         
         // Scroll to results
         document.getElementById('results-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    // Initialize
-    window.onload = () => {
-        createTestTable();
-        document.getElementById('report-date').textContent = new Date().toLocaleDateString('en-GB');
+    function toggleAdvancedOptions() {
+        const options = document.getElementById('advanced-options');
+        options.style.display = options.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function updateTestTable() {
+        const n = parseInt(document.getElementById('num_tests').value) || 10;
+        const studyType = document.getElementById('study_type').value;
+        const tbody = document.getElementById('test-data-body');
+        const thead = document.getElementById('table-head');
+        
+        // Clear existing content
+        tbody.innerHTML = '';
+        thead.innerHTML = '';
+        
+        // Add print-specific class
+        document.getElementById('validation-table').classList.add('print-optimized');
+        
+        // Create header row for complete tests
+        const headerRow = document.createElement('tr');
+        
+        // Always include these columns
+        headerRow.innerHTML = '<th style="width: 80px;">Test #</th>';
+        
+        // Conditionally include Lab column
+        if (studyType === 'between-lab') {
+            headerRow.innerHTML += '<th style="width: 80px;">Lab</th>';
+        }
+        
+        // Conditionally include Operator column
+        if (studyType !== 'repeatability') {
+            headerRow.innerHTML += '<th style="width: 100px;">Operator</th>';
+        }
+        
+        // Always include these columns with specific widths
+        headerRow.innerHTML += `
+            <th style="width: 100px;">ASTM<br>Method</th>
+            <th style="width: 140px;">Maximum Dry<br>Density (g/cm³)</th>
+            <th style="width: 140px;">Optimum Moisture<br>Content (%)</th>
+            <th style="width: 100px;">Compaction<br>Points</th>
+            <th style="width: 120px;">Applied<br>Corrections</th>
+            <th style="width: 120px;">Uncertainty<br>Evaluation</th>
+        `;
+        
+        thead.appendChild(headerRow);
+        
+        // Create data rows with print-optimized formatting
+            for (let i = 0; i < n; i++) {
+                const row = document.createElement('tr');
+                const data = defaultCompleteTestData[i % defaultCompleteTestData.length];
+                
+                // Format numeric values for consistent display
+                const formattedMDD = parseFloat(data.mdd).toFixed(4);
+                const formattedOMC = parseFloat(data.omc).toFixed(2);
+                const formattedPoints = String(data.points).padStart(2, '0');
+                
+                // Always include Test # with print-optimized formatting
+                let rowHTML = `<td style="background-color: #f8f9fa; font-weight: bold; font-family: monospace;">${String(i + 1).padStart(2, '0')}</td>`;
+            
+            // Conditionally include Lab
+            if (studyType === 'between-lab') {
+                rowHTML += `
+                    <td>
+                        <select id="t${i}_lab">
+                            <option value="A" ${data.lab === 'A' ? 'selected' : ''}>Lab A</option>
+                            <option value="B" ${data.lab === 'B' ? 'selected' : ''}>Lab B</option>
+                            <option value="C" ${data.lab === 'C' ? 'selected' : ''}>Lab C</option>
+                        </select>
+                    </td>
+                `;
+            } else {
+                rowHTML += `<input type="hidden" id="t${i}_lab" value="${data.lab}">`;
+            }
+            
+            // Conditionally include Operator
+            if (studyType !== 'repeatability') {
+                rowHTML += `
+                    <td>
+                        <select id="t${i}_operator">
+                            <option value="1" ${data.operator === '1' ? 'selected' : ''}>Operator 1</option>
+                            <option value="2" ${data.operator === '2' ? 'selected' : ''}>Operator 2</option>
+                            <option value="3" ${data.operator === '3' ? 'selected' : ''}>Operator 3</option>
+                            <option value="4" ${data.operator === '4' ? 'selected' : ''}>Operator 4</option>
+                            <option value="5" ${data.operator === '5' ? 'selected' : ''}>Operator 5</option>
+                            <option value="6" ${data.operator === '6' ? 'selected' : ''}>Operator 6</option>
+                        </select>
+                    </td>
+                `;
+            } else {
+                rowHTML += `<input type="hidden" id="t${i}_operator" value="${data.operator}">`;
+            }
+            
+            // Always include these columns
+            rowHTML += `
+                <td>
+                    <select id="t${i}_method">
+                        <option value="A" ${data.method === 'A' ? 'selected' : ''}>Method A</option>
+                        <option value="B" ${data.method === 'B' ? 'selected' : ''}>Method B</option>
+                        <option value="C" ${data.method === 'C' ? 'selected' : ''}>Method C</option>
+                    </select>
+                </td>
+                <td><input type="number" id="t${i}_mdd" value="${data.mdd}" step="0.001" min="1.0" max="3.0"></td>
+                <td><input type="number" id="t${i}_omc" value="${data.omc}" step="0.1" min="0" max="30"></td>
+                <td><input type="number" id="t${i}_points" value="${data.points}" min="4" max="10"></td>
+                <td>
+                    <select id="t${i}_correction">
+                        <option value="None" ${data.correction === 'None' ? 'selected' : ''}>None</option>
+                        <option value="Oversize" ${data.correction === 'Oversize' ? 'selected' : ''}>Oversize</option>
+                        <option value="Other" ${data.correction === 'Other' ? 'selected' : ''}>Other</option>
+                    </select>
+                </td>
+                <td>
+                    <select id="t${i}_uncertainty">
+                        <option value="Internal" ${data.uncertainty === 'Internal' ? 'selected' : ''}>Internal</option>
+                        <option value="External" ${data.uncertainty === 'External' ? 'selected' : ''}>External</option>
+                    </select>
+                </td>
+            `;
+            
+            row.innerHTML = rowHTML;
+            tbody.appendChild(row);
+        }
+    }
+
+    function calculatePrecision() {
+        const n = parseInt(document.getElementById('num_tests')?.value) || 10;
+        const studyType = document.getElementById('study_type')?.value || 'between-lab';
+        const confidence = parseInt(document.getElementById('confidence_level').value);
+        
+        // Collect test data
+        const testData = [];
+        
+        for (let i = 0; i < n; i++) {
+            const lab = document.getElementById(`t${i}_lab`).value;
+            const operator = document.getElementById(`t${i}_operator`).value;
+            const method = document.getElementById(`t${i}_method`).value;
+            const mdd = getVal(`t${i}_mdd`);
+            const numPoints = parseInt(document.getElementById(`t${i}_points`).value) || 5;
+            const correction = document.getElementById(`t${i}_correction`).value;
+            const uncertainty = document.getElementById(`t${i}_uncertainty`).value;
+            
+            // Validate input
+            if (mdd <= 0 || mdd > 3.0) {
+                return;
+            }
+            
+            if (numPoints < 4 || numPoints > 10) {
+                return;
+            }
+            
+            testData.push({
+                lab: lab,
+                operator: operator,
+                method: method,
+                mdd: mdd,
+                numPoints: numPoints,
+                correction: correction,
+                uncertainty: uncertainty,
+                index: i
+            });
+        }
+        
+        // Calculate overall statistics
+        const mddValues = testData.map(d => d.mdd);
+        const overallMean = mddValues.reduce((a, b) => a + b, 0) / n;
+        const overallVariance = mddValues.reduce((sum, val) => sum + Math.pow(val - overallMean, 2), 0) / (n - 1);
+        const overallStdDev = Math.sqrt(overallVariance);
+        setVal('mean-mdd', overallMean, 4);
+        // Derive average OMC for ASTM D2216 propagation
+        const avgOMC = testData.reduce((sum, d) => sum + d.omc, 0) / n;
+        window.avg_omc = avgOMC;
+        
+        // Group data based on study type
+        let groups = {};
+        let groupLabel = "Test";
+        
+        if (studyType === 'repeatability') {
+            // For repeatability, each test is its own group
+            testData.forEach((d, i) => {
+                groups[i] = [d];
+            });
+            groupLabel = "Test";
+        } else if (studyType === 'within-lab') {
+            // For within-lab, group by operator
+            testData.forEach(d => {
+                if (!groups[d.operator]) groups[d.operator] = [];
+                groups[d.operator].push(d);
+            });
+            groupLabel = "Operator";
+        } else {
+            // For between-lab, group by lab
+            testData.forEach(d => {
+                if (!groups[d.lab]) groups[d.lab] = [];
+                groups[d.lab].push(d);
+            });
+            groupLabel = "Lab";
+        }
+        
+        // Calculate precision parameters
+        let s_r, s_L, s_R, anova;
+        
+        if (studyType === 'repeatability') {
+            // For repeatability, s_r is the standard deviation of all results
+            s_r = overallStdDev;
+            s_L = 0;
+            s_R = s_r;
+        } else {
+            // For reproducibility, calculate ANOVA
+            anova = calculateANOVA(testData, groups, studyType);
+            s_r = Math.sqrt(anova.withinGroupMS);
+            s_L = Math.sqrt(Math.max(0, (anova.betweenGroupMS - anova.withinGroupMS) / anova.avgGroupSize));
+            s_R = Math.sqrt(s_r * s_r + s_L * s_L);
+        }
+        
+        // Calculate precision limits
+        const tValue = getTValue(n - 1, confidence);
+        const r = tValue * Math.sqrt(2) * s_r; // Repeatability limit
+        const R = tValue * Math.sqrt(2) * s_R; // Reproducibility limit;
+        
+        // Display precision results
+        document.getElementById('results-box').style.display = 'block';
+        setVal('repeatability-std', s_r, 4);
+        setVal('repeatability-limit', r, 4);
+        setVal('reproducibility-std', s_R, 4);
+        setVal('reproducibility-limit', R, 4);
+        setVal('reproducibility-std2', s_R, 4);
+        
+        // Display ANOVA table for reproducibility studies
+        if (studyType !== 'repeatability') {
+            displayANOVATable(anova);
+        } else {
+            // For repeatability, show a simplified ANOVA table
+            displaySimpleANOVATable(overallVariance, n);
+        }
+        
+        // Display reproducibility analysis
+        if (studyType !== 'repeatability') {
+            document.getElementById('reproducibility-box').style.display = 'block';
+            const groupStats = {};
+            Object.keys(groups).forEach(key => {
+                const groupData = groups[key];
+                const groupMdds = groupData.map(d => d.mdd);
+                const groupMean = groupMdds.reduce((a, b) => a + b, 0) / groupMdds.length;
+                const groupVariance = groupMdds.reduce((sum, val) => sum + Math.pow(val - groupMean, 2), 0) / (groupMdds.length - 1);
+                const groupStdDev = Math.sqrt(groupVariance);
+                
+                groupStats[key] = {
+                    mean: groupMean,
+                    stdDev: groupStdDev,
+                    count: groupMdds.length
+                };
+            });
+            displayReproducibilityAnalysis(groupStats, groupLabel, s_r, s_L, s_R);
+        } else {
+            document.getElementById('reproducibility-box').style.display = 'none';
+        }
+        
+        // Calculate effective degrees of freedom for uncertainty
+        let effective_dof;
+        if (studyType === 'repeatability') {
+            effective_dof = n - 1;
+        } else {
+            const s_r2 = anova.withinGroupMS; // = s_r²
+            const s_L2_raw = (anova.betweenGroupMS - anova.withinGroupMS) / anova.avgGroupSize;
+            const s_L2 = Math.max(0, s_L2_raw); // Variance can't be negative
+            const s_R2 = s_r2 + s_L2;
+
+            const nu_r = anova.dfWithin;   // = N - p
+            const nu_L = anova.dfBetween;  // = p - 1
+
+            if (s_L2 <= 0) {
+                // Only repeatability contributes
+                effective_dof = nu_r;
+            } else {
+                const numerator = s_R2 * s_R2;
+                const denominator = (s_r2 * s_r2) / nu_r + (s_L2 * s_L2) / nu_L;
+                effective_dof = denominator > 0 ? numerator / denominator : 1;
+                effective_dof = Math.min(effective_dof, 1e6); // Avoid inf
+            }
+        }
+        
+        // Calculate measurement uncertainty
+        calculateMeasurementUncertainty(s_r, s_R, confidence, effective_dof, overallMean);
+        
+        // Calculate equipment uncertainty contributions
+        calculateEquipmentUncertainty(overallMean);
+        
+        // Update equipment traceability table
+        updateEquipmentTraceability();
+        
+        // Scroll to results
+        document.getElementById('results-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function calculateANOVA(testData, groups, studyType) {
+        const n = testData.length;
+        const p = Object.keys(groups).length; // Number of groups
+        const overallMean = testData.reduce((sum, d) => sum + d.mdd, 0) / n;
+        
+        // Calculate sums of squares
+        let totalSS = 0;
+        let betweenGroupSS = 0;
+        let withinGroupSS = 0;
+        
+        // Total sum of squares
+        testData.forEach(d => {
+            totalSS += Math.pow(d.mdd - overallMean, 2);
+        });
+        
+        // Between-group sum of squares
+        Object.keys(groups).forEach(key => {
+            const groupData = groups[key];
+            const groupMean = groupData.reduce((sum, d) => sum + d.mdd, 0) / groupData.length;
+            betweenGroupSS += groupData.length * Math.pow(groupMean - overallMean, 2);
+        });
+        
+        // Within-group sum of squares
+        Object.keys(groups).forEach(key => {
+            const groupData = groups[key];
+            const groupMean = groupData.reduce((sum, d) => sum + d.mdd, 0) / groupData.length;
+            groupData.forEach(d => {
+                withinGroupSS += Math.pow(d.mdd - groupMean, 2);
+            });
+        });
+        
+        // Degrees of freedom
+        const dfBetween = p - 1;
+        const dfWithin = n - p;
+        const dfTotal = n - 1;
+        
+        // Mean squares
+        const betweenGroupMS = betweenGroupSS / dfBetween;
+        const withinGroupMS = withinGroupSS / dfWithin;
+        
+        // F-value
+        const F = betweenGroupMS / withinGroupMS;
+        
+        // Average group size
+        const avgGroupSize = n / p;
+        
+        return {
+            totalSS,
+            betweenGroupSS,
+            withinGroupSS,
+            dfBetween,
+            dfWithin,
+            dfTotal,
+            betweenGroupMS,
+            withinGroupMS,
+            F,
+            avgGroupSize
+        };
+    }
+
+    function displaySimpleANOVATable(overallVariance, n) {
+        const tbody = document.getElementById('anova-tbody');
+        tbody.innerHTML = `
+            <tr>
+                <td>Total</td>
+                <td>${(overallVariance * (n-1)).toFixed(4)}</td>
+                <td>${n-1}</td>
+                <td>${overallVariance.toFixed(4)}</td>
+                <td>-</td>
+                <td>${overallVariance.toFixed(6)}</td>
+            </tr>
+            <tr>
+                <td>Within Groups (Repeatability)</td>
+                <td>${(overallVariance * (n-1)).toFixed(4)}</td>
+                <td>${n-1}</td>
+                <td>${overallVariance.toFixed(4)}</td>
+                <td>-</td>
+                <td>${overallVariance.toFixed(6)}</td>
+            </tr>
+        `;
+    }
+
+    function displayANOVATable(anova) {
+        const tbody = document.getElementById('anova-tbody');
+        tbody.innerHTML = `
+            <tr>
+                <td>Between Groups</td>
+                <td>${anova.betweenGroupSS.toFixed(4)}</td>
+                <td>${anova.dfBetween}</td>
+                <td>${anova.betweenGroupMS.toFixed(4)}</td>
+                <td>${anova.F.toFixed(3)}</td>
+                <td>${Math.max(0, (anova.betweenGroupMS - anova.withinGroupMS) / anova.avgGroupSize).toFixed(6)}</td>
+            </tr>
+            <tr>
+                <td>Within Groups</td>
+                <td>${anova.withinGroupSS.toFixed(4)}</td>
+                <td>${anova.dfWithin}</td>
+                <td>${anova.withinGroupMS.toFixed(4)}</td>
+                <td>-</td>
+                <td>${anova.withinGroupMS.toFixed(6)}</td>
+            </tr>
+            <tr>
+                <td>Total</td>
+                <td>${anova.totalSS.toFixed(4)}</td>
+                <td>${anova.dfTotal}</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+            </tr>
+        `;
+    }
+
+    function displayReproducibilityAnalysis(groupStats, groupLabel, s_r, s_L, s_R) {
+        // Calculate variance components
+        const betweenGroupVariance = s_L * s_L;
+        const repeatabilityVariance = s_r * s_r;
+        const reproducibilityVariance = s_R * s_R;
+        const totalVariance = betweenGroupVariance + repeatabilityVariance;
+        
+        // Update labels
+        document.getElementById('between-group-label').textContent = 
+            groupLabel === 'Lab' ? 'Between-Lab Variance' : 'Between-Operator Variance';
+        
+        // Update stat cards
+        setVal('between-group-var', s_L * s_L, 6);
+        setVal('repeatability-var', s_r * s_r, 6);
+        setVal('total-var', (s_L * s_L + s_r * s_r), 6);
+        setVal('reproducibility-var', s_R * s_R, 6);
+        
+        // Calculate percentages for variance bars
+        const betweenGroupPercent = totalVariance > 0 ? (betweenGroupVariance / totalVariance * 100) : 0;
+        const repeatabilityPercent = totalVariance > 0 ? (repeatabilityVariance / totalVariance * 100) : 0;
+        
+        // Update variance bars
+        const betweenGroupBar = document.getElementById('between-group-bar');
+        betweenGroupBar.style.width = betweenGroupPercent + '%';
+        betweenGroupBar.querySelector('.variance-bar-label').textContent = 
+            `${groupLabel}: ${betweenGroupPercent.toFixed(1)}%`;
+        
+        const repeatabilityBar = document.getElementById('repeatability-bar');
+        repeatabilityBar.style.width = repeatabilityPercent + '%';
+        repeatabilityBar.querySelector('.variance-bar-label').textContent = 
+            `Repeatability: ${repeatabilityPercent.toFixed(1)}%`;
+        
+        // Update group table
+        const groupTable = document.getElementById('group-table');
+        groupTable.innerHTML = '';
+        
+        Object.keys(groupStats).forEach(key => {
+            const row = document.createElement('tr');
+            const stats = groupStats[key];
+            const groupDisplayName = groupLabel === 'Lab' ? `Lab ${key}` : `Operator ${key}`;
+            
+            row.innerHTML = `
+                <td>${groupDisplayName}</td>
+                <td>${stats.mean.toFixed(4)}</td>
+                <td>${stats.stdDev.toFixed(4)}</td>
+                <td>${stats.count}</td>
+            `;
+            
+            groupTable.appendChild(row);
+        });
+    }
+
+    function calculateMeasurementUncertainty(s_r, s_R, confidence, effective_dof, mean_mdd) {
+        // For complete tests, the primary Type A component is reproducibility
+        const u_repro = s_R;
+
+        // Combine Type A (u_repro) and Type B equipment budget (u_equip) per GUM
+        const u_equip = window.equipment_u_c || 0;
+        const nu_equip = window.equipment_nu_eff;
+        const u_total = Math.sqrt(Math.pow(u_repro, 2) + Math.pow(u_equip, 2));
+
+        // Combined effective degrees of freedom (Welch–Satterthwaite)
+        const nu_repro = effective_dof > 0 ? effective_dof : 1e9;
+        const nu_equip_ws = Number.isFinite(nu_equip) && nu_equip > 0 ? nu_equip : 1e9;
+        const nu_combined = (u_total > 0)
+            ? Math.pow(u_total, 4) / (Math.pow(u_repro, 4) / nu_repro + Math.pow(u_equip, 4) / nu_equip_ws)
+            : 1e9;
+
+        // Coverage factor and expanded uncertainty
+        const k = getTValue(nu_combined, confidence);
+        const U = k * u_total;
+
+        // Display uncertainty results
+        document.getElementById('uncertainty-box').style.display = 'block';
+        setVal('final-uncertainty', U, 4);
+        setVal('coverage-factor', k, 3);
+        setVal('dof', nu_combined, 0);
+        setVal('rel-unc', (U / mean_mdd) * 100, 2);
+
+        // Validity date (unchanged)
+        const now = new Date();
+        const validDate = new Date(now.setFullYear(now.getFullYear() + 1));
+        document.getElementById('valid-date').textContent = validDate.toISOString().split('T')[0];
+    }
+
+    function calculateEquipmentUncertainty(mean_mdd) {
+    // Only calculate if equipment uncertainty is included
+    if (!document.getElementById('include_equipment_uncertainty')?.checked) {
+        window.equipment_u_c = 0;
+        window.equipment_nu_eff = 1e9;
+        return;
+    }
+
+    // Read instrument DOFs
+    const nu_balance = getVal('nu_balance');
+    const nu_caliper = getVal('nu_caliper');
+
+    // Mold volume (cm³)
+    const diameter = getVal('mold_diameter');
+    const height = getVal('mold_height');
+    const radius = diameter / 2;
+    const volume = (Math.PI * Math.pow(radius, 2) * height) / 1000;
+
+    // Balance standard uncertainty (mass)
+    const k_balance = getVal('k_balance') || 1;
+    const u_balance_std = getVal('u_balance_cert') / k_balance;
+    const u_balance_res = getVal('res_balance') / (2 * Math.sqrt(3));
+    const u_balance = Math.sqrt(Math.pow(u_balance_std, 2) + Math.pow(u_balance_res, 2));
+
+    // Caliper standard uncertainty (dimension)
+    const k_caliper = getVal('k_caliper') || 1;
+    const u_caliper_std = getVal('u_caliper_cert') / k_caliper;
+    const u_caliper_res = getVal('res_caliper') / (2 * Math.sqrt(3));
+    const u_caliper = Math.sqrt(Math.pow(u_caliper_std, 2) + Math.pow(u_caliper_res, 2));
+
+    // Volume uncertainty via propagation
+    const rel_u_diameter = diameter ? (u_caliper / diameter) : 0;
+    const rel_u_height = height ? (u_caliper / height) : 0;
+    const rel_u_volume = Math.sqrt(Math.pow(2 * rel_u_diameter, 2) + Math.pow(rel_u_height, 2));
+    const u_volume = volume * rel_u_volume;
+
+    // Sensitivity coefficients
+    const c_balance = volume ? (1 / volume) : 0;
+    const c_volume = volume ? (-mean_mdd / volume) : 0;
+
+    // Contributions
+    const u_balance_contrib = c_balance * u_balance;
+    const u_volume_contrib = c_volume * u_volume;
+
+    // Optional homogeneity contribution
+    let u_homogeneity_contrib = 0;
+    if (document.getElementById('include_homogeneity')?.checked) {
+        const u_homogeneity = mean_mdd * (getVal('u_homogeneity') / 100);
+        u_homogeneity_contrib = u_homogeneity;
+    }
+
+    // Combined standard uncertainty (equipment) in density units
+    const u_c = Math.sqrt(
+        Math.pow(u_balance_contrib, 2) +
+        Math.pow(u_volume_contrib, 2) +
+        Math.pow(u_homogeneity_contrib, 2)
+    );
+
+    // Effective DOF (Welch–Satterthwaite) for equipment budget
+    const denom =
+        (u_balance_contrib !== 0 && nu_balance > 0 ? Math.pow(u_balance_contrib, 4) / nu_balance : 0) +
+        (u_volume_contrib  !== 0 && nu_caliper > 0 ? Math.pow(u_volume_contrib,  4) / nu_caliper : 0);
+
+    const nu_eff = denom > 0 ? Math.pow(u_c, 4) / denom : 1e9;
+
+    // Cache for total measurement uncertainty combination
+    window.equipment_u_c = u_c;
+    window.equipment_nu_eff = nu_eff;
+
+    // Coverage factor and expanded uncertainty (95%)
+    const k = getTValue(nu_eff, 95);
+    const U = k * u_c;
+
+    // Percent contributions
+    const total_var = Math.pow(u_c, 2) || 1;
+    const balance_percent = (Math.pow(u_balance_contrib, 2) / total_var) * 100;
+    const volume_percent = (Math.pow(u_volume_contrib, 2) / total_var) * 100;
+    const homogeneity_percent = (Math.pow(u_homogeneity_contrib, 2) / total_var) * 100;
+
+    // Update table rows
+    const tbody = document.getElementById('uncertainty-budget-table');
+    if (tbody) {
+        tbody.innerHTML = `
+            <tr>
+                <td>Balance (Mass)</td>
+                <td>u<sub>balance</sub></td>
+                <td>${u_balance.toFixed(3)}</td>
+                <td>g</td>
+                <td>Normal</td>
+                <td>${u_balance.toFixed(3)}</td>
+                <td>${c_balance.toFixed(6)}</td>
+                <td>${u_balance_contrib.toFixed(6)}</td>
+                <td>${balance_percent.toFixed(1)}%</td>
+                <td>${nu_balance}</td>
+            </tr>
+            <tr>
+                <td>Caliper (Volume)</td>
+                <td>u<sub>caliper</sub></td>
+                <td>${u_caliper.toFixed(3)}</td>
+                <td>mm</td>
+                <td>Normal</td>
+                <td>${u_caliper.toFixed(3)}</td>
+                <td>${c_volume.toFixed(6)}</td>
+                <td>${u_volume_contrib.toFixed(6)}</td>
+                <td>${volume_percent.toFixed(1)}%</td>
+                <td>${nu_caliper}</td>
+            </tr>
+            <tr>
+                <td>Soil Homogeneity</td>
+                <td>u<sub>homogeneity</sub></td>
+                <td>${(u_homogeneity_contrib ? (u_homogeneity_contrib).toFixed(4) : '0.0000')}</td>
+                <td>g/cm³</td>
+                <td>Normal</td>
+                <td>${(u_homogeneity_contrib ? (u_homogeneity_contrib).toFixed(4) : '0.0000')}</td>
+                <td>1.000000</td>
+                <td>${u_homogeneity_contrib.toFixed(6)}</td>
+                <td>${homogeneity_percent.toFixed(1)}%</td>
+                <td>∞</td>
+            </tr>
+        `;
+    }
+
+    // Update summary elements (no optional chaining on LHS)
+    const elCombined = document.getElementById('combined-uncertainty-value');
+    if (elCombined) elCombined.textContent = u_c.toFixed(6);
+
+    const elDof = document.getElementById('effective-dof-value');
+    if (elDof) elDof.textContent = Math.round(nu_eff).toString();
+
+    const elExpanded = document.getElementById('expanded-uncertainty-value');
+    if (elExpanded) elExpanded.textContent = U.toFixed(6);
+
+    const elCoverage = document.getElementById('coverage-factor-value');
+    if (elCoverage) elCoverage.textContent = k.toFixed(2);
+
+    // Update chart
+    const chartContainer = document.getElementById('uncertainty-chart-container');
+    if (chartContainer) {
+        const contributions = [
+            { name: 'Balance', percent: balance_percent, color: '#007bff' },
+            { name: 'Caliper', percent: volume_percent, color: '#28a745' },
+            { name: 'Homogeneity', percent: homogeneity_percent, color: '#6f42c1' }
+        ].filter(item => item.percent > 0);
+
+        contributions.sort((a, b) => b.percent - a.percent);
+
+        chartContainer.innerHTML = `
+            <h4 style="margin: 0 0 15px 0; color: #333;">Uncertainty Components</h4>
+            ${contributions.map(item => `
+                <div class="uncertainty-bar" style="width: ${Math.min(100, item.percent)}%; background-color: ${item.color};">
+                    <span class="uncertainty-bar-label">${item.name}: ${item.percent.toFixed(1)}%</span>
+                </div>
+            `).join('')}
+            ${contributions.length === 0 ? '<p style="text-align: center; color: #666;">No uncertainty contributions to display</p>' : ''}
+        `;
+    }
+}
+
+
+
+    function saveCalibrationInfo() {
+        const equipment = ['balance', 'caliper'];
+        const fields = ['cal_lab', 'cert_num', 'traceability'];
+        
+        equipment.forEach(equip => {
+            fields.forEach(field => {
+                const id = `${equip}_${field}`;
+                const el = document.getElementById(id);
+                if (el) {
+                    const value = el.value;
+                    localStorage.setItem(id, value);
+                }
+            });
+        });
+    }
+
+    // Load calibration information from localStorage
+    function loadCalibrationInfo() {
+        const equipment = ['balance', 'caliper'];
+        const fields = ['cal_lab', 'cert_num', 'traceability'];
+        
+        equipment.forEach(equip => {
+            fields.forEach(field => {
+                const id = `${equip}_${field}`;
+                const value = localStorage.getItem(id);
+                if (value && document.getElementById(id)) {
+                    document.getElementById(id).value = value;
+                }
+            });
+        });
+    }
+
+    // Add event listeners to save calibration info when changed
+    function setupCalibrationInputs() {
+        const equipment = ['balance', 'caliper'];
+        const fields = ['cal_lab', 'cert_num', 'traceability'];
+        
+        equipment.forEach(equip => {
+            fields.forEach(field => {
+                const id = `${equip}_${field}`;
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', () => {
+                        saveCalibrationInfo();
+                        updateEquipmentTraceability();
+                    });
+                }
+            });
+        });
+
+        [
+            'cal_date_balance','due_date_balance',
+            'cal_date_caliper','due_date_caliper'
+        ].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('change', updateEquipmentTraceability);
+        });
+    }
+
+    // Call setup when document is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCalibrationInfo();
+        setupCalibrationInputs();
+        updateEquipmentTraceability();
+    });
+
+    function updateEquipmentTraceability() {
+        // ... existing code ...
+        const calDateBalance = document.getElementById('cal_date_balance')?.value;
+        const dueDateBalance = document.getElementById('due_date_balance')?.value;
+        const calDateCaliper = document.getElementById('cal_date_caliper')?.value;
+        const dueDateCaliper = document.getElementById('due_date_caliper')?.value;
+
+        const balanceCalLab = (document.getElementById('balance_cal_lab')?.value || '—').trim();
+        const balanceCertNum = (document.getElementById('balance_cert_num')?.value || '—').trim();
+        const balanceTrace = (document.getElementById('balance_traceability')?.value || '—').trim();
+
+        const caliperCalLab = (document.getElementById('caliper_cal_lab')?.value || '—').trim();
+        const caliperCertNum = (document.getElementById('caliper_cert_num')?.value || '—').trim();
+        const caliperTrace = (document.getElementById('caliper_traceability')?.value || '—').trim();
+
+        const now = new Date();
+        const daysUntilBalance = dueDateBalance ? Math.ceil((new Date(dueDateBalance) - now) / (1000 * 60 * 60 * 24)) : NaN;
+        const daysUntilCaliper = dueDateCaliper ? Math.ceil((new Date(dueDateCaliper) - now) / (1000 * 60 * 60 * 24)) : NaN;
+
+        const getStatus = (days) => {
+            if (isNaN(days)) return { text: "—", class: "" };
+            if (days < 0) return { text: "Overdue", class: "text-danger" };
+            if (days < 30) return { text: "Due Soon", class: "text-warning" };
+            return { text: "Current", class: "text-success" };
+        };
+
+        const balanceStatus = getStatus(daysUntilBalance);
+        const caliperStatus = getStatus(daysUntilCaliper);
+
+        const tbody = document.getElementById('equipment-traceability-table');
+        if (!tbody) return;
+        tbody.innerHTML = `
+            <tr>
+                <td>Balance (Proctor Test)</td>
+                <td>${calDateBalance || '—'}</td>
+                <td>${dueDateBalance || '—'}</td>
+                <td>${isNaN(daysUntilBalance) ? '—' : daysUntilBalance}</td>
+                <td class="${balanceStatus.class}">${balanceStatus.text}</td>
+                <td>${balanceCalLab}</td>
+                <td>${balanceCertNum}</td>
+                <td>${balanceTrace}</td>
+            </tr>
+            <tr>
+                <td>Caliper / Mold Dimensions</td>
+                <td>${calDateCaliper || '—'}</td>
+                <td>${dueDateCaliper || '—'}</td>
+                <td>${isNaN(daysUntilCaliper) ? '—' : daysUntilCaliper}</td>
+                <td class="${caliperStatus.class}">${caliperStatus.text}</td>
+                <td>${caliperCalLab}</td>
+                <td>${caliperCertNum}</td>
+                <td>${caliperTrace}</td>
+            </tr>
+        `;
+    }
+
+    // Initialize the page
+    window.onload = function() {
+        updateTestTable();
+        
+        // Set current date
+        const now = new Date();
+        document.getElementById('report-date').textContent = now.toISOString().split('T')[0];
     };
 </script>
-
 </body>
 </html>
